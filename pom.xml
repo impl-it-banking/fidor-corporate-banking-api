@@ -83,6 +83,7 @@
                     <systemPropertyVariables>
                         <fidor.email>${fidor.email}</fidor.email>
                         <fidor.password>${fidor.password}</fidor.password>
+                        <fidor.owniban>${fidor.owniban}</fidor.owniban>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

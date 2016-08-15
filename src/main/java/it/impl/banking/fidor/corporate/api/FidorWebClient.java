@@ -17,8 +17,11 @@ package it.impl.banking.fidor.corporate.api;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import it.impl.banking.api.BankingApiException;
+import it.impl.banking.api.account.information.StaticAccountInformationService;
 import it.impl.banking.api.authentication.AuthenticationService;
 import it.impl.banking.api.authentication.AuthenticationServiceException;
 import it.impl.banking.api.authentication.InvalidAuthenticationTokenException;
@@ -28,7 +31,8 @@ import java.io.IOException;
 import lombok.Setter;
 
 public class FidorWebClient implements
-        AuthenticationService<MailAddressPasswordToken> {
+        AuthenticationService<MailAddressPasswordToken>,
+        StaticAccountInformationService {
 
     final static String FIDOR_SIGN_IN_PAGE = "https://banking.fidor.de/users/sign_in";
 
@@ -79,5 +83,16 @@ public class FidorWebClient implements
         if (overviewPage == null) {
             throw new UnauthenticatedException();
         }
+    }
+
+    @Override
+    public String getIban() throws BankingApiException {
+        checkForAuthenticatedSession();
+
+        return ((HtmlElement) overviewPage
+                .getByXPath("//ul[@class='account-number-info']/li/strong[1]")
+                .get(0))
+                .asText()
+                .replaceAll("\\s+", "");
     }
 }

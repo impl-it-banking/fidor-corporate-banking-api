@@ -19,7 +19,9 @@ import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import it.impl.banking.api.authentication.AuthenticationServiceException;
 import it.impl.banking.api.authentication.MailAddressPasswordToken;
+import it.impl.banking.api.authentication.UnauthenticatedException;
 import java.io.IOException;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -69,5 +71,24 @@ public class FidorWebClientTest {
         fidorWebClient.setWebClient(new WebClient());
         fidorWebClient.signIn(new MailAddressPasswordToken(email, password));
         fidorWebClient.singOut();
+    }
+
+    @Test
+    @Category(FidorCorporateAccountRequired.class)
+    public void retrieveStaticAccountInformationIban() throws Exception {
+        String email = System.getProperty("fidor.email");
+        String password = System.getProperty("fidor.password");
+        String owniban = System.getProperty("fidor.owniban");
+
+        fidorWebClient.setWebClient(new WebClient());
+        fidorWebClient.signIn(new MailAddressPasswordToken(email, password));
+
+        assertEquals(owniban, fidorWebClient.getIban());
+        fidorWebClient.singOut();
+    }
+
+    @Test(expected = UnauthenticatedException.class)
+    public void staticAccountInformationIsNotRetrievableWithoutSignIn() throws Exception {
+        fidorWebClient.getIban();
     }
 }
