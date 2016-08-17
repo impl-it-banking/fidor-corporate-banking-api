@@ -21,6 +21,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import it.impl.banking.api.BankingApiException;
+import it.impl.banking.api.account.balance.BalanceService;
+import it.impl.banking.api.account.balance.BalanceServiceException;
 import it.impl.banking.api.account.information.StaticAccountInformationService;
 import it.impl.banking.api.authentication.AuthenticationService;
 import it.impl.banking.api.authentication.AuthenticationServiceException;
@@ -28,11 +30,16 @@ import it.impl.banking.api.authentication.InvalidAuthenticationTokenException;
 import it.impl.banking.api.authentication.MailAddressPasswordToken;
 import it.impl.banking.api.authentication.UnauthenticatedException;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.Locale;
 import lombok.Setter;
 
 public class FidorWebClient implements
         AuthenticationService<MailAddressPasswordToken>,
-        StaticAccountInformationService {
+        StaticAccountInformationService,
+        BalanceService {
 
     final static String FIDOR_SIGN_IN_PAGE = "https://banking.fidor.de/users/sign_in";
 
@@ -94,5 +101,24 @@ public class FidorWebClient implements
                 .get(0))
                 .asText()
                 .replaceAll("\\s+", "");
+    }
+
+    @Override
+    public BigDecimal getBalanace() throws UnauthenticatedException, BalanceServiceException {
+        checkForAuthenticatedSession();
+        try {
+            String balanceWithCurrency = ((HtmlElement) overviewPage
+                    .getByXPath("//div[@class='available-balance']/span")
+                    .get(0))
+                    .asText()
+                    .replaceAll("[^0-9\\,]", "");
+
+            NumberFormat germanNumberFormat = NumberFormat.getInstance(Locale.GERMANY);
+            Number balance = germanNumberFormat.parse(balanceWithCurrency);
+
+            return BigDecimal.valueOf(balance.doubleValue());
+        } catch (ParseException ex) {
+            throw new BalanceServiceException(ex);
+        }
     }
 }

@@ -22,6 +22,7 @@ import it.impl.banking.api.authentication.MailAddressPasswordToken;
 import it.impl.banking.api.authentication.UnauthenticatedException;
 import java.io.IOException;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -89,6 +90,24 @@ public class FidorWebClientTest {
 
     @Test(expected = UnauthenticatedException.class)
     public void staticAccountInformationIsNotRetrievableWithoutSignIn() throws Exception {
+        fidorWebClient.getIban();
+    }
+
+    @Test
+    @Category(FidorCorporateAccountRequired.class)
+    public void getAccountBalance() throws Exception {
+        String email = System.getProperty("fidor.email");
+        String password = System.getProperty("fidor.password");
+
+        fidorWebClient.setWebClient(new WebClient());
+        fidorWebClient.signIn(new MailAddressPasswordToken(email, password));
+
+        assertNotNull(fidorWebClient.getBalanace());
+        fidorWebClient.singOut();
+    }
+
+    @Test(expected = UnauthenticatedException.class)
+    public void AccountBalanceIsNotRetrievableWithoutSignIn() throws Exception {
         fidorWebClient.getIban();
     }
 }
