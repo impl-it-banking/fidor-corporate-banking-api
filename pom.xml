@@ -12,6 +12,13 @@
         </license>
     </licenses>
     <inceptionYear>2016</inceptionYear>
+    <developers>
+        <developer>
+            <id>asbachb</id>
+            <name>Benjamin Asbach</name>
+            <organizationUrl>https://www.impl.it</organizationUrl>
+        </developer>
+    </developers>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
