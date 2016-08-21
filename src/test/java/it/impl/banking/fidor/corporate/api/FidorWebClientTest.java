@@ -18,13 +18,8 @@ package it.impl.banking.fidor.corporate.api;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import it.impl.banking.api.authentication.AuthenticationServiceException;
-import it.impl.banking.api.authentication.MailAddressPasswordToken;
-import it.impl.banking.api.authentication.UnauthenticatedException;
 import java.io.IOException;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import static org.mockito.Matchers.anyString;
@@ -51,63 +46,5 @@ public class FidorWebClientTest {
     public void authenticationServiceExceptionOccursOnFailingHttpStatusCodeException() throws Exception {
         when(webClient.getPage(anyString())).thenThrow(FailingHttpStatusCodeException.class);
         fidorWebClient.signIn(null);
-    }
-
-    @Test
-    @Category(FidorCorporateAccountRequired.class)
-    public void performRealSignIn() throws Exception {
-        String email = System.getProperty("fidor.email");
-        String password = System.getProperty("fidor.password");
-
-        fidorWebClient.setWebClient(new WebClient());
-        fidorWebClient.signIn(new MailAddressPasswordToken(email, password));
-    }
-
-    @Test
-    @Category(FidorCorporateAccountRequired.class)
-    public void performRealSignOut() throws Exception {
-        String email = System.getProperty("fidor.email");
-        String password = System.getProperty("fidor.password");
-
-        fidorWebClient.setWebClient(new WebClient());
-        fidorWebClient.signIn(new MailAddressPasswordToken(email, password));
-        fidorWebClient.singOut();
-    }
-
-    @Test
-    @Category(FidorCorporateAccountRequired.class)
-    public void retrieveStaticAccountInformationIban() throws Exception {
-        String email = System.getProperty("fidor.email");
-        String password = System.getProperty("fidor.password");
-        String owniban = System.getProperty("fidor.owniban");
-
-        fidorWebClient.setWebClient(new WebClient());
-        fidorWebClient.signIn(new MailAddressPasswordToken(email, password));
-
-        assertEquals(owniban, fidorWebClient.getIban());
-        fidorWebClient.singOut();
-    }
-
-    @Test(expected = UnauthenticatedException.class)
-    public void staticAccountInformationIsNotRetrievableWithoutSignIn() throws Exception {
-        fidorWebClient.getIban();
-    }
-
-    @Test
-    @Category(FidorCorporateAccountRequired.class)
-    public void getAccountBalance() throws Exception {
-        String email = System.getProperty("fidor.email");
-        String password = System.getProperty("fidor.password");
-
-        fidorWebClient.setWebClient(new WebClient());
-        fidorWebClient.signIn(new MailAddressPasswordToken(email, password));
-
-        assertNotNull(fidorWebClient.getBalanace());
-        fidorWebClient.singOut();
-    }
-
-    @Test(expected = UnauthenticatedException.class)
-    public void AccountBalanceIsNotRetrievableWithoutSignIn() throws Exception {
-        fidorWebClient.getIban();
     }
 }
