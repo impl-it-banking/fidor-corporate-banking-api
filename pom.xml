@@ -14,7 +14,7 @@
         <dependency>
             <groupId>it.impl.banking</groupId>
             <artifactId>banking-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>[0.10.0,0.10.100)</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>
