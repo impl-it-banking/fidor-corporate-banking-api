@@ -137,8 +137,10 @@ public class FidorWebClient implements
     @Override
     public List<Transaction> getTransactions(TransactionConstraint constraint) throws TransactionServiceException {
         try {
+            checkForAuthenticatedSession();
+
             return constraint.getTransactionsFilteredByConstraint();
-        } catch (TransactionConstraintException ex) {
+        } catch (UnauthenticatedException | TransactionConstraintException ex) {
             throw new TransactionServiceException(ex);
         }
     }
