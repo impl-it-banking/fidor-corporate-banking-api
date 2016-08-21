@@ -58,12 +58,10 @@
                         <owner>Benjamin Asbach</owner>
                         <email>https://www.impl.it</email>
                     </properties>
-                    <excludes>
-                        <exclude>pom.xml</exclude>
-                        <exclude>**/LICENSE</exclude>
-                        <exclude>src/test/resources/**</exclude>
-                        <exclude>src/main/resources/**</exclude>
-                    </excludes>
+                    <includes>
+                        <include>src/main/src</include>
+                        <include>src/main/test</include>
+                    </includes>
                     <mapping>
                         <java>SLASHSTAR_STYLE</java>
                     </mapping>
