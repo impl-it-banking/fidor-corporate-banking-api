@@ -19,6 +19,16 @@
             <organizationUrl>https://www.impl.it</organizationUrl>
         </developer>
     </developers>
+    <scm>
+        <url>https://github.com/impl-it-banking/fidor-corporate-banking-api</url>
+        <tag>HEAD</tag>
+        <connection>scm:git:git@github.com:impl-it-banking/fidor-corporate-banking-api</connection>
+        <developerConnection>scm:git:git@github.com:impl-it-banking/fidor-corporate-banking-api</developerConnection>
+    </scm>
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/impl-it-banking/fidor-corporate-banking-api/issues</url>
+    </issueManagement>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
