@@ -24,6 +24,11 @@ import it.impl.banking.api.BankingApiException;
 import it.impl.banking.api.account.balance.BalanceService;
 import it.impl.banking.api.account.balance.BalanceServiceException;
 import it.impl.banking.api.account.information.StaticAccountInformationService;
+import it.impl.banking.api.account.transaction.Transaction;
+import it.impl.banking.api.account.transaction.TransactionConstraint;
+import it.impl.banking.api.account.transaction.TransactionConstraintException;
+import it.impl.banking.api.account.transaction.TransactionService;
+import it.impl.banking.api.account.transaction.TransactionServiceException;
 import it.impl.banking.api.authentication.AuthenticationService;
 import it.impl.banking.api.authentication.AuthenticationServiceException;
 import it.impl.banking.api.authentication.InvalidAuthenticationTokenException;
@@ -33,17 +38,24 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.List;
 import java.util.Locale;
 import lombok.Setter;
 
 public class FidorWebClient implements
         AuthenticationService<MailAddressPasswordToken>,
         StaticAccountInformationService,
-        BalanceService {
+        BalanceService,
+        TransactionService {
 
-    final static String FIDOR_SIGN_IN_PAGE = "https://banking.fidor.de/users/sign_in";
+    final static String FIDOR_SIGN_IN_PAGE
+            = "https://banking.fidor.de/users/sign_in";
 
-    final static String FIDOR_CORPORATE_SIGN_OUT_PAGE = "https://banking.fidor.de/corporate/logout";
+    final static String FIDOR_CORPORATE_SIGN_OUT_PAGE
+            = "https://banking.fidor.de/corporate/logout";
+
+    final static String FIDOR_CORPORATE_TRANSACTIONS_CSV_PAGE
+            = "https://banking.fidor.de/smart-account/transactions.csv?days=60&time_selection=days";
 
     @Setter
     private WebClient webClient;
@@ -119,6 +131,15 @@ public class FidorWebClient implements
             return BigDecimal.valueOf(balance.doubleValue());
         } catch (ParseException ex) {
             throw new BalanceServiceException(ex);
+        }
+    }
+
+    @Override
+    public List<Transaction> getTransactions(TransactionConstraint constraint) throws TransactionServiceException {
+        try {
+            return constraint.getTransactionsFilteredByConstraint();
+        } catch (TransactionConstraintException ex) {
+            throw new TransactionServiceException(ex);
         }
     }
 }
